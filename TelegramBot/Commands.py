@@ -1,11 +1,10 @@
 
-from Objects import newCommand
+from Modules import Load, Save, perm, ranint, toInt
 from Poll import createPoll, cancelPoll
-from Modules import Load, Save, toMsg, perm, ranint
+from Objects import newCommand
 from Messages import Message
 from Request import Request
 from time import ctime
-from toInt import toInt
 from re import split
 
     # returns bool wether cmd exists or not
@@ -27,7 +26,7 @@ have fun :D
     # save bug report to report log file
 def reportBug(chatID, userID, data):
     if len(data) == 1: return 'write a bug report after \n/bugreport!'
-    Save('Reports', '%s%s|%s:\n%s\n%s\n' % (Load('Reports', '',False), chatID, userID, toMsg(data[1:]), 70*'-'),False)
+    Save('Reports', '%s%s|%s:\n%s\n%s\n' % (Load('Reports', '',False), chatID, userID, ' '.join(data[1:]), 70*'-'),False)
     return 'bug reported!'
 
     # returns date in format 'day, DD. month YYYY HH:MM'
@@ -82,7 +81,7 @@ Commands = {
     	),
     'ranint' : newCommand('/ranint min max',
             'returns random number between min and max.',
-            'msg', lambda chatID, userID, data : ranInt(toMsg(data[1:]))
+            'msg', lambda chatID, userID, data : ranInt(' '.join(data[1:]))
         ),
     'lscmds' : newCommand('/lscmds',
             'returns a list of all commands',
@@ -90,7 +89,7 @@ Commands = {
         ),
     'echo' : newCommand('/echo msg',
             'returns the text (not useful! :p)',
-            'msg', lambda chatID, userID, data : toMsg(data[1:]) or 'empty message text!'
+            'msg', lambda chatID, userID, data : ' '.join(data[1:]) or 'empty message text!'
         ),
     'help' : newCommand('/help + cmd',
             'returns general help or if given of a command',
@@ -102,7 +101,7 @@ Commands = {
         ),
     'calc' : newCommand('/calc term',
             'calculates a term with math functions',
-            'msg', lambda chatID, userID, data : toInt(toMsg(data[1:]))
+            'msg', lambda chatID, userID, data : toInt(' '.join(data[1:]))
         ),
     'bugreport' : newCommand('/bugreport report',
             'report a bug you\'ve found',

@@ -1,6 +1,6 @@
 
 from Commands import getUsersByRank
-from Modules import toMsg, Load, Save, perm
+from Modules import Load, Save, perm
 from Objects import newCommand
 from Messages import Message
 from random import randint

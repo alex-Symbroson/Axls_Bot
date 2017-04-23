@@ -69,12 +69,6 @@ def Save(file, value, encode=True):
     f.close()
     return
 
-    # return string by command array
-def toMsg(data):
-    s = ''
-    for v in data: s +=v + ' '
-    return s
-
     # return permission name by index
 def perm(i):
     return ['slave', 'normal', 'super', 'admin'][i]
@@ -84,7 +78,7 @@ allowed = ('abs|acos|acosh|asin|asinh|atan|atan2|atanh|ceil|copysign|cos|cosh|'
            'degrees|e|erf|erfc|exp|expm1|fabs|factorial|f1|floor|fmod|frexp|'
            'fsum|gamma|hypot|isfinite|isinf|isnan|ldexp|lgamma|log|log1|log2p|'
            'modf|pi|radians|round|sin|sinh|sqr|sqrt|tan|tanh|trunc|W|\+|\-|\*|'
-           '\/|\^|\<|\>|\%|\&|\||\(|\)|[0-9]')
+           '\/|\^|\<|\>|\%|\&|\||\(|\)|[0-9]| |.|,')
 
 sqr = lambda x:x**2
 
@@ -110,7 +104,7 @@ def W(x):
 
     # calculate int from string via eval
 def toInt(s):
-    if sub(allowed,"",s): return "not allowed!"
-    try: return eval(s)
+    if sub(allowed,"",s.lower()): return "not allowed!"
+    try: return eval(s.lower())
     except ZeroDivisionError: return 'division by zero!'
     except: return 'Error!'

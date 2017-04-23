@@ -1,7 +1,7 @@
 
 from PIL import Image, ImageDraw, ImageFont
 from Objects import newPoll, newInBtn
-from Modules import Load, Save, toMsg, path
+from Modules import Load, Save, path
 from math import pi, sin, cos
 from Messages import Message
 from random import randint
@@ -73,7 +73,7 @@ def makeCake(arr):
 
     # open new poll
 def createPoll(chatID, userID, data):
-    msg = toMsg(data).split('\n')
+    msg = ' '.join(data).split('\n')
 
         # return if less than two possible responses given
     if len(msg) < 2:

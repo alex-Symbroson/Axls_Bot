@@ -36,5 +36,5 @@ while(isRunning()):
     for reply in Message.getUpdates():
             # reset in_use status
         globals().update([('in_use', 9)])
-
+        
         handle(reply)
