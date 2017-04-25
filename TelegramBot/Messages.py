@@ -15,7 +15,7 @@ from json import loads
 '''
 
     # your bot's token
-token = "<BOT-TOKEN>"
+token = '<BOT-TOKEN>'
     # my private chat
 myChatID = 000000000
 

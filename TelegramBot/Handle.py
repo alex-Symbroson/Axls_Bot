@@ -91,7 +91,7 @@ def handleMessage(msg, userID, chatID, Reply=False):
     if data[0] == 'getcmdlst' and checkPermission(chatID, userID, 3):
             # make a dict with all commands
         Cmds = {}
-        Cmds.update(cmdPool)
+        Cmds.update([normalCMD, superCMD, sudoCMD])
         cmds = list(Cmds.keys())
         cmds.sort()
             # returns a list of all commands 'cmd-info'
