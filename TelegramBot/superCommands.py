@@ -5,9 +5,6 @@ from Objects import newCommand
 from Messages import Message
 from random import randint
 
-    # returns bool wether cmd exists or not
-hasCmd = lambda cmd: bool(Commands.get(cmd))
-
     # return command syntax and description
 def sendHelp(chatID, userID, data):
     if len(data) == 0:

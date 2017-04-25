@@ -7,9 +7,6 @@ from Request import Request
 from time import ctime
 from re import split
 
-    # returns bool wether cmd exists or not
-hasCmd = lambda cmd: bool(Commands.get(cmd))
-
     # returns command syntax and description
 def sendHelp(chatID, userID, data):
     if len(data) == 0: return '''AxlsBot reference\n
@@ -19,7 +16,7 @@ informate me about bugs or feature request and I'll try to fix/add them
 have fun :D
 '''
         # return eror if command not exist
-    if Commands.get(data[0]) == None: return 'unknown super command \'%s\'' % data[0]
+    if Commands.get(data[0]) == None: return 'unknown normal command \'%s\'' % data[0]
         # return command syntax and description
     else: return 'Syntax:\n%s\n\nDescription:\n%s' % (Commands[data[0]]['syntax'], Commands[data[0]]['info'])
     

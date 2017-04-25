@@ -12,12 +12,10 @@ running = False
 def startBot():
     global running
     running = True
+    print("started")
 
     # return bool wether bot is runing or not
 isRunning = lambda: running
-
-    # returns bool wether cmd exists or not
-hasCmd = lambda cmd: bool(Commands.get(cmd))
 
     # schedule stop
 def stopBot(chatID, userID, data):
@@ -26,9 +24,14 @@ def stopBot(chatID, userID, data):
     Message.sendToAll('Bot stopped!')
     return
 
-    # return bool wether command exists
-def hasCmd(cmd):
-    return bool(Commands.get(cmd))
+    # return command syntax and info
+def sendHelp(chatID, userID, data):
+    if len(data) == 0:
+        return 'Welcome home! This is the admin part!\ntype /sudo help cmd to get help of any sudo command'
+        # return eror if command not exist
+    if Commands.get(data[0]) == None: return 'unknown sudo command \'%s\'' % data[0]
+        # return command syntax and description
+    else: return 'Syntax:\n%s\n\nDescription:\n%s' % (Commands[data[0]]['syntax'], Commands[data[0]]['info'])
 
     # do smth with a file
 def dofile(chatID, userID, data):
@@ -83,15 +86,6 @@ def getCmds(chatID, userID, data):
         s += key + '\n'
         continue
     return s
-
-    # return command syntax and info
-def sendHelp(chatID, userID, data):
-    if len(data) == 0:
-        return 'Welcome home! This is the admin part!\ntype /sudo help cmd to get help of any sudo command'
-        # return eror if command not exist
-    if Commands.get(data[0]) == None: return 'unknown super command \'%s\'' % data[0]
-        # return command syntax and description
-    else: return 'Syntax:\n%s\n\nDescription:\n%s' % (Commands[data[0]]['syntax'], Commands[data[0]]['info'])
 
     # delete inactive polls from file
 def delPolls(chatID, userID, data):

@@ -1,10 +1,16 @@
 
-from superCommands import Commands as superCMD, hasCmd as isSuperCMD
-from sudoCommands import Commands as sudoCMD, hasCmd as isSudoCMD
-from Commands import Commands as normalCMD, hasCmd as isNormalCMD
+from superCommands import Commands as superCMD
+from sudoCommands import Commands as sudoCMD
+from Commands import Commands as normalCMD
 from Modules import Load, Save, perm, path
 from traceback import print_exc
 from Messages import Message
+
+def getCMD(cmd, permission):
+    return [normalCMD, superCMD, sudoCMD][permission - 1].get(cmd)
+
+def isCMD(cmd, permission):
+    return bool(getCMD(cmd,permission))
 
     # return bool wether user has required rights
 def checkPermission(chatID, userID, required):
@@ -30,17 +36,17 @@ def handle(reply, answerAsReply=False):
     else: return
     
     chatID = str(msg['chat']['id'])
-        
+    
         # saves user data if not known yet
     User = Load('User', {})
     if User.get(userID) == None:
         User[userID] = msg['from'].copy()
         User[userID]['id'] = 1
         Save('User', User)
-
+    
         # saves new chatIDs
     Chats = Load('Chats', {})
-    if not chatID in Chats:
+    if not Chats.get(chatID):
         Chats[chatID] = 1
         Save('Chats', Chats)
 
@@ -64,8 +70,7 @@ def handleMessage(msg, userID, chatID, Reply=False):
     
     data = msgText[1:].split(' ')
         # make commands not case sensitive
-    data[0] = data[0].lower()
-    data[0] = data[0].replace('@axls_bot', '')
+    data[0] = data[0].lower().replace('@axls_bot', '')
     
         # command object
     cmd = None
@@ -73,7 +78,7 @@ def handleMessage(msg, userID, chatID, Reply=False):
         # check for special permissions
     try: permission = ['slave', 'normal', 'super', 'sudo'].index(data[0])
     except: permission = 1
-    else: data = data[1:] if permission > 1 else data
+    else: data = data[1:]
     
         # check if help wanted
     Help = data[0].lower() == 'help'
@@ -86,7 +91,7 @@ def handleMessage(msg, userID, chatID, Reply=False):
     if data[0] == 'getcmdlst' and checkPermission(chatID, userID, 3):
             # make a dict with all commands
         Cmds = {}
-        Cmds.update([normalCMD, superCMD, sudoCMD])
+        Cmds.update(cmdPool)
         cmds = list(Cmds.keys())
         cmds.sort()
             # returns a list of all commands 'cmd-info'
@@ -94,7 +99,8 @@ def handleMessage(msg, userID, chatID, Reply=False):
         return
     
         # get required permission for the command
-    required = (1*isNormalCMD(data[0]) or 2*isSuperCMD(data[0]) or 3*isSudoCMD(data[0]))
+    required = (1*isCMD(data[0],1) or 2*isCMD(data[0],2) or 3*isCMD(data[0],3))
+    
         # command not found
     if required == 0:
         Message.sendMessage(chatID, 'Command \'' + data[0] + '\' not found!', Reply*msg['message_id'])
@@ -107,19 +113,12 @@ def handleMessage(msg, userID, chatID, Reply=False):
         # but continue because command is useable
     elif not checkPermission(None, userID, permission):
         Message.sendMessage(chatID, 'Warning: You are not ' + perm(permission) + '!', Reply*msg['message_id'])
-    
+
         # find right command dict where to get the help from
     if Help:
-            # search command in given permission - command dict
-        cmd = [normalCMD, superCMD, sudoCMD][permission-1].get('help')
-            # if command not found, find with required permissions
-        if cmd['reply'](chatID, userID, data) == 'unknown':
-            cmd = [normalCMD, superCMD, sudoCMD][required-1].get('help')
+        cmd = getCMD('help',permission) if isCMD(data[0], permission) else getCMD('help',required)
     else:
-            # same again - search command in given or required dict
-        cmd = [normalCMD, superCMD, sudoCMD][permission-1].get(data[0])
-        if not cmd:
-            cmd = [normalCMD, superCMD, sudoCMD][required-1].get(data[0])
+        cmd = getCMD(data[0], permission) or getCMD(data[0], required)
     
         # catch errors in the unusual case that it wasnt found until now
     if not cmd:

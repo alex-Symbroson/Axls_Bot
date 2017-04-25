@@ -20,24 +20,23 @@ def strip(s):
 
     # saves data into the log file
 def Log(Logtype, *args):
+    print(Logtype, *args)
     f = open(path + 'Store/Log.txt', 'a')
-    log = Logtype + '\t'
-    for arg in args: log += str(arg) + '\n\t'
-    f.write(dumps(log[:-1]))
+    f.write('%s\t%s\n\n' % (Logtype, '\n\t'.join(str(arg) for arg in args)))
     f.close()
     return
 
     # loads a variable from the store-folder
 def Load(file, default,decode=True):
-    fpath = path + 'Store/'
+    dpath = path + 'Store/'
+    fpath = dpath + file + '.txt'
     
         # create store folder if not exist
-    if not isdir(fpath):
-        makedirs(fpath)
+    if not isdir(dpath): makedirs(dpath)
 
-    exist = isfile(fpath + file)
+    exist = isfile(fpath)
     if exist:
-        f = open(fpath + file, 'r')
+        f = open(fpath, 'r')
         s = f.read()
 
             # mark file as not existent if it is empty
@@ -49,7 +48,7 @@ def Load(file, default,decode=True):
 
         # writes default data to file if it is empty or doesn't exist
     if not exist:
-        f = open(fpath + file, 'w')
+        f = open(fpath, 'w')
         f.write(dumps(default) if decode else default)
         s = default
         
@@ -58,13 +57,13 @@ def Load(file, default,decode=True):
 
     # saves a variable to the store-folder
 def Save(file, value, encode=True):
-    fpath = path + 'Store/'
+    dpath = path + 'Store/'
+    fpath = dpath + file + '.txt'
     
         # create store folder if not exist
-    if not isdir(fpath):
-        makedirs(fpath)
+    if not isdir(dpath): makedirs(dpath)
     
-    f = open(fpath + file, 'w')
+    f = open(fpath, 'w')
     f.write(dumps(value) if encode else value)
     f.close()
     return

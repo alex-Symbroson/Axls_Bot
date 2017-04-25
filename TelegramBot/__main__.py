@@ -26,6 +26,7 @@ del outtimed
 globals().update([('in_use', 9)]) # make in_use global
 
 startBot()
+
     # save time when bot sarted
 startTime = time()
 
@@ -36,5 +37,5 @@ while(isRunning()):
     for reply in Message.getUpdates():
             # reset in_use status
         globals().update([('in_use', 9)])
-        
+        print(reply)
         handle(reply)
